@@ -270,7 +270,9 @@ static NSDictionary *               kCRToastKeyClassMap                     = ni
 static BOOL kCRFrameAutoAdjustedForOrientation = NO;
 
 static CGFloat const CRNavigationBarDefaultHeight = 45.0f;
+static CGFloat const CRNavigationBarWithPromptDefaultHeight = 75.0f;
 static CGFloat const CRNavigationBarDefaultHeightiPhoneLandscape = 33.0f;
+static CGFloat const CRNavigationBarWithPromptDefaultHeightiPhoneLandscape = 55.0f;
 
 static UIInterfaceOrientation CRGetDeviceOrientation() {
     return [UIApplication sharedApplication].statusBarOrientation;
@@ -308,11 +310,28 @@ static CGFloat CRGetStatusBarWidth() {
     return CRGetStatusBarWidthForOrientation(CRGetDeviceOrientation());
 }
 
+static BOOL CGNavigationBarHasPrompt() {
+    UIViewController *rootController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    if ([rootController isKindOfClass:UINavigationController.class]) {
+        if ([[[[rootController childViewControllers] firstObject] navigationItem] prompt]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 static CGFloat CRGetNavigationBarHeightForOrientation(UIInterfaceOrientation orientation) {
-    return (UIDeviceOrientationIsPortrait(orientation) ||
-            UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ?
-    CRNavigationBarDefaultHeight :
-    CRNavigationBarDefaultHeightiPhoneLandscape;
+    if (CGNavigationBarHasPrompt()) {
+        return (UIDeviceOrientationIsPortrait(orientation) ||
+                UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ?
+        CRNavigationBarWithPromptDefaultHeight :
+        CRNavigationBarWithPromptDefaultHeightiPhoneLandscape;
+    } else {
+        return (UIDeviceOrientationIsPortrait(orientation) ||
+                UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ?
+        CRNavigationBarDefaultHeight :
+        CRNavigationBarDefaultHeightiPhoneLandscape;
+    }
 }
 
 static CGFloat CRGetNotificationViewHeightForOrientation(CRToastType type, CGFloat preferredNotificationHeight, UIInterfaceOrientation orientation) {

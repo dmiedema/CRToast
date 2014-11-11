@@ -117,6 +117,13 @@
 - (IBAction)navigationBarChanged:(UISwitch *)sender {
     [[self navigationController] setNavigationBarHidden:!sender.on animated:YES];
 }
+- (IBAction)navgationBarPromptChanged:(UISwitch *)sender {
+    if (sender.isOn) {
+        self.navigationItem.prompt = @"Navigation Prompt";
+    } else {
+        self.navigationItem.prompt = nil;
+    }
+}
 
 # pragma mark - Show Notification
 
