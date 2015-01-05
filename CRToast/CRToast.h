@@ -148,6 +148,12 @@ extern NSString *const kCRToastNotificationTypeKey;
 extern NSString *const kCRToastNotificationPreferredHeightKey;
 
 /**
+ Custom view to use in place of predefined `CRToastView`. `kCRToastNotificationPreferredHeightKey` 
+ should be set along with this key. Expects type `UIView`
+*/
+extern NSString *const kCRToastNotificationCustomViewKey;
+
+/**
  The presentation type for the notification. Expects type `CRToastPresentationType`.
  */
 extern NSString *const kCRToastNotificationPresentationTypeKey;

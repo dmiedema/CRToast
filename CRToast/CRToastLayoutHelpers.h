@@ -12,23 +12,33 @@
 #ifndef NSFoundationVersionNumber_iOS_7_1
 #define NSFoundationVersionNumber_iOS_7_1 1047.25
 #endif
+
+#ifndef __IPHONE_7_1
+#define __IPHONE_7_1     70100
+#endif
+
 /* Taken from NSObjCRuntime.h */
 #define CR_NSFoundationVersionNumber_iOS_7_1 NSFoundationVersionNumber_iOS_7_1
 
 static BOOL CRHorizontalSizeClassRegular() {
+
     if (floor(NSFoundationVersionNumber) > CR_NSFoundationVersionNumber_iOS_7_1) {
     /* What this is really doing 
        Also supress the warnings around possible leaks with those.
        This is super ugly.
      */
-    //    return [UIScreen mainScreen].traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    return [UIScreen mainScreen].traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular;
+#endif
     //		kCRFrameAutoAdjustedForOrientation = (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1);
     //        kCRUseSizeClass = kCRFrameAutoAdjustedForOrientation;
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        NSInteger sizeClass = (NSInteger)[[[UIScreen mainScreen] performSelector:NSSelectorFromString(@"traitCollection")] performSelector:NSSelectorFromString(@"horizontalSizeClass")];
-        #pragma clang diagnostic pop
-        return sizeClass == 2; // UIUserInterfaceSizeClassRegular = 2
+        
+//        #endif
+//        #pragma clang diagnostic push
+//        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+//        NSInteger sizeClass = (NSInteger)[[[UIScreen mainScreen] performSelector:NSSelectorFromString(@"traitCollection")] performSelector:NSSelectorFromString(@"horizontalSizeClass")];
+//        #pragma clang diagnostic pop
+//        return sizeClass == 2; // UIUserInterfaceSizeClassRegular = 2
     }
     return NO;
 }
