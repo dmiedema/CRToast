@@ -1,0 +1,3 @@
+coverage_service: coveralls
+xcodeproj: CRToastDemo.xcodeproj
+source_directory: CRToast
