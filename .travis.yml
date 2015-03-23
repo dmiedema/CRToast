@@ -6,3 +6,6 @@ xcode_workspace: CRToastDemo.xcworkspace
 xcode_scheme: CRToastTests
 xcode_sdk:
   - iphonesimulator8.1
+
+before_install: gem install cocoapods slather -N
+after_success: slather
