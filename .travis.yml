@@ -5,6 +5,4 @@ xcode_workspace: CRToastDemo.xcworkspace
 # xcode_project: CRToastDemo.xcodeproj
 xcode_scheme: CRToastTests
 xcode_sdk:
-  - iphonesimulator7.0
-  - iphonesimulator7.1
   - iphonesimulator8.1
