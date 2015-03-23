@@ -1,7 +1,6 @@
 //
-//  CRToast.m
-//  CRNotificationDemo
-//
+//  CRToast
+//  Copyright (c) 2014-2015 Collin Ruffenach. All rights reserved.
 //
 
 #import <QuartzCore/QuartzCore.h>
@@ -180,6 +179,7 @@ NSString *const kCRToastNotificationPreferredHeightKey      = @"kCRToastNotifica
 NSString *const kCRToastNotificationPresentationTypeKey     = @"kCRToastNotificationPresentationTypeKey";
 
 NSString *const kCRToastUnderStatusBarKey                   = @"kCRToastUnderStatusBarKey";
+NSString *const kCRToastKeepNavigationBarBorder             = @"kCRToastKeepNavigationBarBorder";
 
 NSString *const kCRToastAnimationInTypeKey                  = @"kCRToastAnimationInTypeKey";
 NSString *const kCRToastAnimationOutTypeKey                 = @"kCRToastAnimationOutTypeKey";
@@ -427,7 +427,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 
 #pragma mark - Notification View Helpers
 
-- (UIView*)notificationView {
+- (UIView *)notificationView {
     return self.privateNotificationView;
 }
 
@@ -448,7 +448,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
     return CRNotificationViewFrame(self.notificationType, self.outAnimationDirection, self.preferredHeight);
 }
 
-- (UIView*)statusBarView {
+- (UIView *)statusBarView {
     return self.privateStatusBarView;
 }
 
@@ -495,7 +495,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 
 #pragma mark - Overrides
 
-- (NSArray*)gestureRecognizersForInteractionResponder:(NSArray*)interactionResponders {
+- (NSArray *)gestureRecognizersForInteractionResponder:(NSArray*)interactionResponders {
     NSMutableArray *gestureRecognizers = [@[] mutableCopy];
     for (CRToastInteractionResponder *interactionResponder in [kCRInteractionResponders arrayByAddingObjectsFromArray:interactionResponders]) {
         if (CRToastInteractionResponderIsGenertic(interactionResponder.interactionType)) {
@@ -509,7 +509,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
     return [NSArray arrayWithArray:gestureRecognizers];
 }
 
-- (NSArray*)gestureRecognizers {
+- (NSArray *)gestureRecognizers {
     return _options[kCRToastInteractionRespondersKey] ?
     _gestureRecognizers ?: [self gestureRecognizersForInteractionResponder:_options[kCRToastInteractionRespondersKey]] :
     [self gestureRecognizersForInteractionResponder:kCRInteractionResponders];
@@ -537,6 +537,12 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
     return _options[kCRToastUnderStatusBarKey] ?
     [self.options[kCRToastUnderStatusBarKey] boolValue] :
     kCRDisplayUnderStatusBarDefault;
+}
+
+- (BOOL)shouldKeepNavigationBarBorder {
+    return _options[kCRToastKeepNavigationBarBorder] ?
+    [_options[kCRToastKeepNavigationBarBorder] boolValue] :
+    YES;
 }
 
 - (CRToastAnimationType)inAnimationType {
@@ -659,7 +665,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
     return _options[kCRToastBackgroundViewKey];
 }
 
-- (UIImage*)image {
+- (UIImage *)image {
     return _options[kCRToastImageKey] ?: kCRImageDefault;
 }
 
@@ -674,6 +680,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 - (BOOL)showActivityIndicator {
     return _options[kCRToastShowActivityIndicatorKey] ? [_options[kCRToastShowActivityIndicatorKey] boolValue] : kCRShowActivityIndicatorDefault;
 }
+
 - (UIActivityIndicatorViewStyle)activityIndicatorViewStyle {
     return _options[kCRToastActivityIndicatorViewStyleKey] ? [_options[kCRToastActivityIndicatorViewStyleKey] integerValue] : kCRActivityIndicatorViewStyleDefault;
 }
@@ -744,7 +751,7 @@ static CGFloat kCRCollisionTweak = 0.5;
     switch (self.inAnimationDirection) {
         case CRToastAnimationDirectionTop:
             x = 0;
-            y = (factor*CGRectGetHeight(self.notificationViewAnimationFrame1))+(push ? -4*kCRCollisionTweak : kCRCollisionTweak);
+            y = factor*(CGRectGetHeight(self.notificationViewAnimationFrame1)+(push ? -4*kCRCollisionTweak : kCRCollisionTweak));
             break;
         case CRToastAnimationDirectionLeft:
             x = (factor*CGRectGetWidth(self.notificationViewAnimationFrame1))+(push ? -5*kCRCollisionTweak : 2*kCRCollisionTweak);
@@ -759,7 +766,7 @@ static CGFloat kCRCollisionTweak = 0.5;
             y = 0;
             break;
     }
-    return (CGPoint){x, y};
+    return CGPointMake(x, y);
 }
 
 - (CGPoint)inCollisionPoint2 {
@@ -770,7 +777,7 @@ static CGFloat kCRCollisionTweak = 0.5;
     switch (self.inAnimationDirection) {
         case CRToastAnimationDirectionTop:
             x = CGRectGetWidth(self.notificationViewAnimationFrame1);
-            y = (factor*CGRectGetHeight(self.notificationViewAnimationFrame1))+(push ? -4*kCRCollisionTweak : kCRCollisionTweak);
+            y = factor*(CGRectGetHeight(self.notificationViewAnimationFrame1)+(push ? -4*kCRCollisionTweak : kCRCollisionTweak));
             break;
         case CRToastAnimationDirectionLeft:
             x = (factor*CGRectGetWidth(self.notificationViewAnimationFrame1))+(push ? -5*kCRCollisionTweak : 2*kCRCollisionTweak);
@@ -785,7 +792,7 @@ static CGFloat kCRCollisionTweak = 0.5;
             y = CGRectGetHeight(self.notificationViewAnimationFrame1);
             break;
     }
-    return (CGPoint){x, y};
+    return CGPointMake(x, y);
 }
 
 - (CGPoint)outCollisionPoint1 {
@@ -809,7 +816,7 @@ static CGFloat kCRCollisionTweak = 0.5;
             y = CGRectGetHeight(self.notificationViewAnimationFrame1);
             break;
     }
-    return (CGPoint){x, y};
+    return CGPointMake(x, y);
 }
 
 - (CGPoint)outCollisionPoint2 {
@@ -833,7 +840,7 @@ static CGFloat kCRCollisionTweak = 0.5;
             y = 0;
             break;
     }
-    return (CGPoint){x, y};
+    return CGPointMake(x, y);
 }
 
 - (void)warnAboutSensibility {

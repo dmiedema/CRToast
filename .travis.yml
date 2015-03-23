@@ -1,11 +1,13 @@
 language: objective-c
 before_install:
-  - brew outdated xctool || brew upgrade xctool
-xcode_workspace: CRToastDemo.xcworkspace
-# xcode_project: CRToastDemo.xcodeproj
+  - brew update
+  - brew reinstall xctool
+  - gem update cocoapods
+podfile: Example/Podfile
+xcode_workspace: Example/CRToastDemo.xcworkspace
 xcode_scheme: CRToastTests
 xcode_sdk:
-  - iphonesimulator8.1
+  - iphonesimulator
 
 before_install: gem install cocoapods slather -N
 after_success: slather
