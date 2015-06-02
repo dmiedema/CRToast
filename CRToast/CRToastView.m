@@ -14,8 +14,9 @@
 @property (strong, nonatomic) NSLayoutConstraint *activityViewTrailing;
 @end
 
-static CGFloat const kCRStatusBarViewNoImageLeftContentInset = 10;
-static CGFloat const kCRStatusBarViewNoImageRightContentInset = 10;
+static CGFloat const kCRStatusBarViewNoImageLeftContentInset = 10.0;
+static CGFloat const kCRStatusBarViewNoImageRightContentInset = 10.0;
+static CGFloat const kCRAccessoryViewPadding = 10.0;
 
 // UIApplication's statusBarFrame will return a height for the status bar that includes
 // a 5 pixel vertical padding. This frame height is inappropriate to use when centering content
@@ -112,12 +113,12 @@ static NSArray * CRConstraitsForAccessoryViewWithMaxHeight(UIView *accessoryView
 }
 
 /**
- <#Description#>
+ Calculate the necessary layout constraint for a given view alignments X position
 
- @param accessoryView <#accessoryView description#>
- @param alignment     <#alignment description#>
+ @param accessoryView @c UIView to align
+ @param alignment     @c CRToastAccessoryViewAlignment to use for determining X position
 
- @return <#return value description#>
+ @return @c NSLayoutConstaint which can be applied to the @c accessoryView.superview property
  */
 static NSLayoutConstraint * CRConstraintForAccessoryViewXPositionWithAlignment(UIView *accessoryView, CRToastAccessoryViewAlignment alignment) {
     NSLayoutAttribute accessoryViewToAttribute;
@@ -141,25 +142,25 @@ static NSLayoutConstraint * CRConstraintForAccessoryViewXPositionWithAlignment(U
 }
 
 /**
- <#Description#>
+ Calculate the necessary layout constraint for a given accessory view when centered related to another centered @c UIView
 
- @param accessoryView <#accessoryView description#>
- @param relatedToView <#relatedToView description#>
+ @param accessoryView @c UIView accessory view such as @c UIImage or @c UIActivityIndicator
+ @param relatedToView @c UIView related view, usually @c UILabel text that is centered also
 
- @return <#return value description#>
+ @return @c NSLayoutConstraint which can be applied to @c accessoryView.superview property
  */
 static NSLayoutConstraint * CRConstraintForCenteredAccessoryViewWithRelationToCenteredView(UIView *accessoryView, UIView *relatedToView) {
-    return [NSLayoutConstraint constraintWithItem:accessoryView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:relatedToView attribute:NSLayoutAttributeLeftMargin multiplier:1 constant:10];
+    return [NSLayoutConstraint constraintWithItem:accessoryView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:relatedToView attribute:NSLayoutAttributeLeftMargin multiplier:1 constant:kCRAccessoryViewPadding];
 }
 
 /**
- <#Description#>
+ Calculate the size for a given label within a set rectangular bounds
 
- @param bounds               <#bounds description#>
- @param heightOffset         <#heightOffset description#>
- @param showingAccessoryView <#showingAccessoryView description#>
+ @param bounds               @c CGRect bounds to contain text to
+ @param heightOffset         @c CGFloat height offset to subtract from the bounds.height
+ @param showingAccessoryView @c BOOL if we are showing an accessory view. If @c YES we want to constrain width further.
 
- @return <#return value description#>
+ @return @c CGSize label can/should be constrainted to
  */
 static CGSize CRSizeForLabelsWithinBounds(CGRect bounds, CGFloat heightOffset, BOOL showingAccessoryView) {
     CGFloat height = CGRectGetHeight(bounds) - heightOffset;
@@ -171,45 +172,90 @@ static CGSize CRSizeForLabelsWithinBounds(CGRect bounds, CGFloat heightOffset, B
 }
 
 /**
- <#Description#>
+ Calculate the X position for the label based on its alignment & any accessory views and their alignments
 
- @param label                    <#label description#>
- @param labelAlignment           <#labelAlignment description#>
- @param imageView                <#imageView description#>
- @param imageAlignment           <#imageAlignment description#>
- @param showingImage             <#showingImage description#>
- @param activityIndicator        <#activityIndicator description#>
- @param activityIdicatorAligment <#activityIdicatorAligment description#>
- @param showingActivityIndicator <#showingActivityIndicator description#>
+ @param label                    @c UILabel to constrain
+ @param labelAlignment           Labels preferred text alignment
+ @param imageView                @c UIImage that is shown in the toast. May be @c nil if no image is shown.
+ @param imageAlignment           Image alignment
+ @param showingImage             @c YES if an image is shown. @c NO if not.
+ @param activityIndicator        @c UIActivityIndicatorView that is shown in the toast. May be @c nil if no activity indicator
+ @param activityIdicatorAligment Activity indicator alignment
+ @param showingActivityIndicator @c YES if activity indicator is shown, @c NO if it is not.
 
- @return <#return value description#>
+ @return @c NSLayoutConstraint for the label based on its alignment and any accessory view alignments
  */
-static NSLayoutConstraint * CRConstraintForLabelXPosition(UILabel *label, NSTextAlignment labelAlignment, UIImage *imageView, CRToastAccessoryViewAlignment imageAlignment, BOOL showingImage, UIActivityIndicatorView *activityIndicator, CRToastAccessoryViewAlignment activityIdicatorAligment, BOOL showingActivityIndicator) {
+static NSLayoutConstraint * CRConstraintForLabelXPosition(UILabel *label, NSTextAlignment labelAlignment, UIImageView *imageView, CRToastAccessoryViewAlignment imageAlignment, BOOL showingImage, UIActivityIndicatorView *activityIndicator, CRToastAccessoryViewAlignment activityIdicatorAligment, BOOL showingActivityIndicator) {
+    
+    NSLayoutConstraint *labelXConstrant;
     if (!showingImage && !showingActivityIndicator) {
-        //
+        switch (labelAlignment) {
+            case NSTextAlignmentLeft:
+            case NSTextAlignmentJustified:
+            case NSTextAlignmentNatural: {
+                labelXConstrant = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:label.superview attribute:NSLayoutAttributeLeft multiplier:1.0 constant:kCRAccessoryViewPadding];
+                break;
+            }
+            case NSTextAlignmentCenter: {
+                labelXConstrant = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:label.superview attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0];
+                break;
+            }
+            case NSTextAlignmentRight: {
+                labelXConstrant = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:label.superview attribute:NSLayoutAttributeRight multiplier:1.0 constant:-kCRAccessoryViewPadding];
+                break;
+            }
+        }
     }
 
-    if (labelAlignment == NSTextAlignmentLeft &&
-        ((activityIdicatorAligment == CRToastAccessoryViewAlignmentLeft && showingActivityIndicator) ||
-         (imageAlignment == CRToastAccessoryViewAlignmentLeft && showingImage))) {
-
+    UIView *toItem = imageView ?: activityIndicator;
+    if (labelAlignment == NSTextAlignmentLeft
+        && ((activityIdicatorAligment == CRToastAccessoryViewAlignmentLeft && showingActivityIndicator)
+            || (imageAlignment == CRToastAccessoryViewAlignmentLeft && showingImage))) {
+        // Left align label(s) to accessory view + padding
+        labelXConstrant = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:toItem attribute:NSLayoutAttributeRight multiplier:1.0 constant:kCRAccessoryViewPadding];
     }
 
-    if (labelAlignment == NSTextAlignmentCenter &&
-        ((activityIdicatorAligment == CRToastAccessoryViewAlignmentCenter && showingActivityIndicator) ||
-         (imageAlignment == CRToastAccessoryViewAlignmentCenter && showingImage))) {
-
+    if (labelAlignment == NSTextAlignmentCenter
+        && ((activityIdicatorAligment == CRToastAccessoryViewAlignmentCenter && showingActivityIndicator)
+            || (imageAlignment == CRToastAccessoryViewAlignmentCenter && showingImage))) {
+        // center label(s) in superview + ((width accessory + accessoryPadding) / 2)
+        // shift the text to the right so the label & the accessory view are centered together
+        CGFloat xoffset = (imageView) ? CGRectGetHeight(imageView.frame) : CGRectGetHeight(activityIndicator.frame);
+        xoffset = (xoffset + kCRAccessoryViewPadding) / 2.0;
+        
+        labelXConstrant = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:label.superview attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:xoffset];
     }
 
-    if (labelAlignment == NSTextAlignmentRight &&
-        ((activityIdicatorAligment == CRToastAccessoryViewAlignmentRight && showingActivityIndicator) ||
-         (imageAlignment == CRToastAccessoryViewAlignmentRight && showingImage))) {
-
+    if (labelAlignment == NSTextAlignmentRight
+        && ((activityIdicatorAligment == CRToastAccessoryViewAlignmentRight && showingActivityIndicator)
+            || (imageAlignment == CRToastAccessoryViewAlignmentRight && showingImage))) {
+        // Stick label(s) right sides against accessory left side
+        labelXConstrant = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:toItem attribute:NSLayoutAttributeLeft multiplier:1.0 constant:-kCRAccessoryViewPadding];
     }
-
-    return [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:label.superview attribute:NSLayoutAttributeLeftMargin multiplier:0 constant:0];
+    
+    return labelXConstrant;
 }
 
+/**
+ Calculate the width constraint for the labels based on if an accessory view is shown also
+ 
+ @param label                @c UILabel the label whose width needs to be constrained
+ @param bounds               @c CGRect bounds of the view containing the views
+ @param showingAccessoryView @c BOOL for if any accessory vies are shown. @c YES if they are, @c NO if they are not
+ 
+ @return @c NSLayoutConstraint to constrain widths of labels
+ */
+static NSLayoutConstraint * CRConstraintForLabelWidth(UILabel *label, CGRect bounds, BOOL showingAccessoryView) {
+    // width minus edge paddings
+    CGFloat width = CGRectGetWidth(bounds) - (kCRStatusBarViewNoImageLeftContentInset + kCRStatusBarViewNoImageRightContentInset);
+    // If we show an accessory view make sure we don't push it off the screen or cover it
+    if (showingAccessoryView) {
+        width -= (CGRectGetHeight(bounds) * 2);
+    }
+    return [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:width];
+}
+
+#pragma mark - Implementation
 @implementation CRToastView
 
 - (instancetype)initWithFrame:(CGRect)frame {
