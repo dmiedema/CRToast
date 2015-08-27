@@ -38,7 +38,7 @@ typedef NS_OPTIONS(NSInteger, CRToastInteractionType) {
     CRToastInteractionTypeAll               = (CRToastInteractionTypeSwipe | CRToastInteractionTypeTap)
 };
 
-extern NSString *NSStringFromCRToastInteractionType(CRToastInteractionType interactionType);
+extern NSString *_Nonnull NSStringFromCRToastInteractionType(CRToastInteractionType interactionType);
 
 /**
  CRToastInteractionResponder is a container object to configure responses to user interactions with a notification. A collection of interaction responders can be included in the
@@ -54,9 +54,9 @@ extern NSString *NSStringFromCRToastInteractionType(CRToastInteractionType inter
  @param block A block of code to be called immidiately upon the interaction being encountered. The block will be provided the specific CRToastInteractionType that resulted in the
  block firing
  */
-+ (instancetype)interactionResponderWithInteractionType:(CRToastInteractionType)interactionType
++ (nullable instancetype)interactionResponderWithInteractionType:(CRToastInteractionType)interactionType
                                    automaticallyDismiss:(BOOL)automaticallyDismiss
-                                                  block:(void (^)(CRToastInteractionType interactionType))block;
+                                                  block:(void (^_Nullable)(CRToastInteractionType interactionType))block;
 @end
 
 ///--------------------
@@ -121,6 +121,7 @@ typedef NS_ENUM(NSInteger, CRToastAccessoryViewAlignment){
     CRToastAccessoryViewAlignmentRight
 };
 
+NS_ASSUME_NONNULL_BEGIN
 ///--------------------
 /// @name Option Keys
 ///--------------------
@@ -365,21 +366,23 @@ extern NSString *const kCRToastIdentifierKey;
  */
 extern NSString *const kCRToastCaptureDefaultWindowKey;
 
+NS_ASSUME_NONNULL_END
+
 #pragma mark - CRToast Interface
 @interface CRToast : NSObject <UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) NSUUID *uuid;
+@property (nonatomic, strong, nonnull) NSUUID *uuid;
 @property (nonatomic, assign) CRToastState state;
 
 //Top Level Properties
 
-@property (nonatomic, strong) NSDictionary *options;
-@property (nonatomic, copy) void(^completion)(void);
-@property (nonatomic, copy) void(^appearance)(void);
+@property (nonatomic, strong, nullable) NSDictionary<NSString*, __kindof NSObject*> *options;
+@property (nonatomic, copy, nullable) void(^completion)(void);
+@property (nonatomic, copy, nullable) void(^appearance)(void);
 
 //Interactions
 
-@property (nonatomic, strong) NSArray *gestureRecognizers;
+@property (nonatomic, strong, nonnull) NSArray *gestureRecognizers;
 
 //Autorotate
 
@@ -387,13 +390,13 @@ extern NSString *const kCRToastCaptureDefaultWindowKey;
 
 //Views and Layout Data
 
-@property (nonatomic, readonly) UIView *notificationView;
+@property (nonatomic, readonly, nonnull) UIView *notificationView;
 @property (nonatomic, readonly) CGRect notificationViewAnimationFrame1;
 @property (nonatomic, readonly) CGRect notificationViewAnimationFrame2;
-@property (nonatomic, readonly) UIView *statusBarView;
+@property (nonatomic, readonly, nonnull) UIView *statusBarView;
 @property (nonatomic, readonly) CGRect statusBarViewAnimationFrame1;
 @property (nonatomic, readonly) CGRect statusBarViewAnimationFrame2;
-@property (nonatomic, strong) UIDynamicAnimator *animator;
+@property (nonatomic, strong, nullable) UIDynamicAnimator *animator;
 
 //Read Only Convinence Properties Providing Default Values or Values from Options
 
@@ -416,28 +419,28 @@ extern NSString *const kCRToastCaptureDefaultWindowKey;
 @property (nonatomic, readonly) CGFloat animationSpringInitialVelocity;
 @property (nonatomic, readonly) CGFloat animationGravityMagnitude;
 
-@property (nonatomic, readonly) NSString *text;
-@property (nonatomic, readonly) UIFont *font;
-@property (nonatomic, readonly) UIColor *textColor;
+@property (nonatomic, readonly, nonnull) NSString *text;
+@property (nonatomic, readonly, nullable) UIFont *font;
+@property (nonatomic, readonly, nullable) UIColor *textColor;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
-@property (nonatomic, readonly) UIColor *textShadowColor;
+@property (nonatomic, readonly, nullable) UIColor *textShadowColor;
 @property (nonatomic, readonly) CGSize textShadowOffset;
 @property (nonatomic, readonly) NSInteger textMaxNumberOfLines;
 
-@property (nonatomic, readonly) NSString *subtitleText;
-@property (nonatomic, readonly) UIFont *subtitleFont;
-@property (nonatomic, readonly) UIColor *subtitleTextColor;
+@property (nonatomic, readonly, nullable) NSString *subtitleText;
+@property (nonatomic, readonly, nullable) UIFont *subtitleFont;
+@property (nonatomic, readonly, nullable) UIColor *subtitleTextColor;
 @property (nonatomic, readonly) NSTextAlignment subtitleTextAlignment;
-@property (nonatomic, readonly) UIColor *subtitleTextShadowColor;
+@property (nonatomic, readonly, nullable) UIColor *subtitleTextShadowColor;
 @property (nonatomic, readonly) CGSize subtitleTextShadowOffset;
 @property (nonatomic, readonly) NSInteger subtitleTextMaxNumberOfLines;
 @property (nonatomic, readonly) UIStatusBarStyle statusBarStyle;
-@property (nonatomic, readonly) UIColor *backgroundColor;
-@property (nonatomic, readonly) UIView *backgroundView;
-@property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, readonly, nullable) UIColor *backgroundColor;
+@property (nonatomic, readonly, nullable) UIView *backgroundView;
+@property (nonatomic, readonly, nullable) UIImage *image;
 @property (nonatomic, readonly) UIViewContentMode imageContentMode;
 @property (nonatomic, readonly) CRToastAccessoryViewAlignment imageAlignment;
-@property (nonatomic, readonly) UIColor *imageTint;
+@property (nonatomic, readonly, nullable) UIColor *imageTint;
 @property (nonatomic, readonly) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 @property (nonatomic, readonly) CRToastAccessoryViewAlignment activityViewAlignment;
 @property (nonatomic, readonly) BOOL showActivityIndicator;
@@ -451,8 +454,8 @@ extern NSString *const kCRToastCaptureDefaultWindowKey;
 @property (nonatomic, readonly) CGPoint outCollisionPoint1;
 @property (nonatomic, readonly) CGPoint outCollisionPoint2;
 
-- (void)swipeGestureRecognizerSwiped:(CRToastSwipeGestureRecognizer*)swipeGestureRecognizer;
-- (void)tapGestureRecognizerTapped:(CRToastTapGestureRecognizer*)tapGestureRecognizer;
-- (void)initiateAnimator:(UIView *)view;
+- (void)swipeGestureRecognizerSwiped:(CRToastSwipeGestureRecognizer* _Nonnull)swipeGestureRecognizer;
+- (void)tapGestureRecognizerTapped:(CRToastTapGestureRecognizer* _Nonnull)tapGestureRecognizer;
+- (void)initiateAnimator:(UIView *_Nonnull)view;
 
 @end

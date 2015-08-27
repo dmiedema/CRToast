@@ -9,7 +9,10 @@
  A toast manager providing Class level API's for the presentation of notifications with a variery of options
  */
 
+@class CRToast;
+
 @interface CRToastManager : NSObject
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  Sets the default options that CRToast will use when displaying a notification
@@ -17,7 +20,7 @@
  showNotificationWithOptions:completionBlock and showNotificationWithMessage:completionBlock: calls
  */
 
-+ (void)setDefaultOptions:(NSDictionary*)defaultOptions;
++ (void)setDefaultOptions:(NSDictionary<NSString*, __kindof NSObject*> *)defaultOptions;
 
 /**
  Queues a notification to be shown with a collection of options.
@@ -29,7 +32,7 @@
  synchronizing sound / vibration.
  */
 
-+ (void)showNotificationWithOptions:(NSDictionary*)options apperanceBlock:(void (^)(void))appearance completionBlock:(void (^)(void))completion;
++ (void)showNotificationWithOptions:(NSDictionary<NSString*, __kindof NSObject*> * _Nullable)options apperanceBlock:(void (^_Nullable)(void))appearance completionBlock:(void (^_Nullable)(void))completion;
 
 /**
  Queues a notification to be shown with a collection of options.
@@ -38,7 +41,7 @@
  @param completion A completion block to be fired at the completion of the dismisall of the notification
  */
 
-+ (void)showNotificationWithOptions:(NSDictionary*)options completionBlock:(void (^)(void))completion;
++ (void)showNotificationWithOptions:(NSDictionary<NSString*, __kindof NSObject*> * _Nullable)options completionBlock:(void (^ _Nullable)(void))completion;
 
 /**
  Queues a notification to be shown with a given message
@@ -47,7 +50,7 @@
  @param completion A completion block to be fired at the completion of the dismisall of the notification
  */
 
-+ (void)showNotificationWithMessage:(NSString*)message completionBlock:(void (^)(void))completion;
++ (void)showNotificationWithMessage:(NSString* _Nonnull)message completionBlock:(void (^ _Nullable)(void))completion;
 
 /**
  Immidiately begins the (un)animated dismisal of a notification
@@ -68,17 +71,18 @@
  @param identifier `kCRToastIdentiferKey` specified for the toasts in queue. If no toasts are found with that identifier, none will be removed.
  @param animated   If YES the notification will dismiss with its configure animation, otherwise it will immidiately disappear
  */
-+ (void)dismissAllNotificationsWithIdentifier:(NSString *)identifer animated:(BOOL)animated;
++ (void)dismissAllNotificationsWithIdentifier:(NSString * _Nonnull)identifer animated:(BOOL)animated;
 
 /**
  Gets the array of notification identifiers currently in the @c CRToastManager notifications queue.
  If no identifier is specified for the @c kCRToastIdentifier when created, it will be excluded from this collection.
  */
-+ (NSArray *)notificationIdentifiersInQueue;
++ (NSArray<CRToast*> *)notificationIdentifiersInQueue;
 
 /**
  Checks if there is a notification currently being displayed
  */
 + (BOOL)isShowingNotification;
 
+NS_ASSUME_NONNULL_END
 @end

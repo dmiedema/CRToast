@@ -341,7 +341,7 @@
 		5E2FFB4B18367C01003333F8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Collin Ruffenach";
 				TargetAttributes = {
 					2D240E3419235A280079F079 = {
@@ -588,6 +588,7 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Tests/Acceptance Tests/Acceptance Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "CR.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -609,6 +610,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "Tests/Acceptance Tests/Acceptance Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "CR.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -635,6 +637,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "Tests/Unit Tests/CRToastTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "CR.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -657,6 +660,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "Tests/Unit Tests/CRToastTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "CR.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -681,6 +685,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -751,6 +756,7 @@
 				GCC_PREFIX_HEADER = "CRToastDemo/CRToastDemo-Prefix.pch";
 				GCC_WARN_PEDANTIC = YES;
 				INFOPLIST_FILE = "CRToastDemo/CRToastDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = CRToastDemo;
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -774,6 +780,7 @@
 				GCC_PREFIX_HEADER = "CRToastDemo/CRToastDemo-Prefix.pch";
 				GCC_WARN_PEDANTIC = YES;
 				INFOPLIST_FILE = "CRToastDemo/CRToastDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = CRToastDemo;
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;

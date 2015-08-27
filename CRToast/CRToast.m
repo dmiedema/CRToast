@@ -42,7 +42,7 @@ typedef void (^CRToastInteractionResponderBlock) (CRToastInteractionType interac
 @interface CRToastSwipeGestureRecognizer : UISwipeGestureRecognizer
 @property (nonatomic, assign) BOOL automaticallyDismiss;
 @property (nonatomic, assign) CRToastInteractionType interactionType;
-@property (nonatomic, copy) CRToastInteractionResponderBlock block;
+@property (nonatomic, copy, nullable) CRToastInteractionResponderBlock block;
 @end
 
 @implementation CRToastSwipeGestureRecognizer
@@ -52,7 +52,7 @@ typedef void (^CRToastInteractionResponderBlock) (CRToastInteractionType interac
 @interface CRToastTapGestureRecognizer : UITapGestureRecognizer
 @property (nonatomic, assign) BOOL automaticallyDismiss;
 @property (nonatomic, assign) CRToastInteractionType interactionType;
-@property (nonatomic, copy) CRToastInteractionResponderBlock block;
+@property (nonatomic, copy, nullable) CRToastInteractionResponderBlock block;
 @end
 
 @implementation CRToastTapGestureRecognizer
@@ -62,7 +62,7 @@ typedef void (^CRToastInteractionResponderBlock) (CRToastInteractionType interac
 @interface CRToastInteractionResponder ()
 @property (nonatomic, assign) CRToastInteractionType interactionType;
 @property (nonatomic, assign) BOOL automaticallyDismiss;
-@property (nonatomic, copy) CRToastInteractionResponderBlock block;
+@property (nonatomic, copy, nullable) CRToastInteractionResponderBlock block;
 @end
 
 #pragma mark - Interaction Setup Helpers
@@ -625,15 +625,15 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (NSString*)text {
-    return _options[kCRToastTextKey] ?: kCRTextDefault;
+    return (NSString *)_options[kCRToastTextKey] ?: kCRTextDefault;
 }
 
 - (UIFont*)font {
-    return _options[kCRToastFontKey] ?: kCRFontDefault;
+    return (UIFont *)_options[kCRToastFontKey] ?: kCRFontDefault;
 }
 
 - (UIColor*)textColor {
-    return _options[kCRToastTextColorKey] ?: kCRTextColorDefault;
+    return (UIColor *)_options[kCRToastTextColorKey] ?: kCRTextColorDefault;
 }
 
 - (NSTextAlignment)textAlignment {
@@ -641,7 +641,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (UIColor*)textShadowColor {
-    return _options[kCRToastTextShadowColorKey] ?: kCRTextShadowColorDefault;
+    return (UIColor *)_options[kCRToastTextShadowColorKey] ?: kCRTextShadowColorDefault;
 }
 
 - (CGSize)textShadowOffset {
@@ -651,15 +651,15 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (NSString*)subtitleText {
-    return _options[kCRToastSubtitleTextKey] ?: kCRSubtitleTextDefault;
+    return (NSString *)_options[kCRToastSubtitleTextKey] ?: kCRSubtitleTextDefault;
 }
 
 - (UIFont*)subtitleFont {
-    return _options[kCRToastSubtitleFontKey] ?: kCRSubtitleFontDefault;
+    return (UIFont *)_options[kCRToastSubtitleFontKey] ?: kCRSubtitleFontDefault;
 }
 
 - (UIColor*)subtitleTextColor {
-    return _options[kCRToastSubtitleTextColorKey] ?: kCRSubtitleTextColorDefault;
+    return (UIColor *)_options[kCRToastSubtitleTextColorKey] ?: kCRSubtitleTextColorDefault;
 }
 
 - (NSTextAlignment)subtitleTextAlignment {
@@ -667,7 +667,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (UIColor*)subtitleTextShadowColor {
-    return _options[kCRToastSubtitleTextShadowColorKey] ?: kCRSubtitleTextShadowColorDefault;
+    return (UIColor *)_options[kCRToastSubtitleTextShadowColorKey] ?: kCRSubtitleTextShadowColorDefault;
 }
 
 - (CGSize)subtitleTextShadowOffset {
@@ -677,7 +677,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (UIColor*)backgroundColor {
-    return _options[kCRToastBackgroundColorKey] ?: kCRBackgroundColorDefault;
+    return (UIColor *)_options[kCRToastBackgroundColorKey] ?: kCRBackgroundColorDefault;
 }
 
 - (UIView *)backgroundView {
@@ -685,7 +685,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (UIImage *)image {
-    return _options[kCRToastImageKey] ?: kCRImageDefault;
+    return (UIImage *)_options[kCRToastImageKey] ?: kCRImageDefault;
 }
 
 - (UIViewContentMode)imageContentMode {
@@ -697,7 +697,7 @@ static NSDictionary *                kCRToastKeyClassMap                    = ni
 }
 
 - (UIColor *)imageTint {
-    return _options[kCRToastImageTintKey] ?: kCRImageTintDefault;
+    return (UIColor *)_options[kCRToastImageTintKey] ?: kCRImageTintDefault;
 }
 
 - (BOOL)showActivityIndicator {

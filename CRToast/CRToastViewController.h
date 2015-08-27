@@ -9,8 +9,8 @@
 @interface CRToastViewController : UIViewController
 
 @property (nonatomic, assign) BOOL autorotate;
-@property (nonatomic, weak) CRToast *notification;
-@property (nonatomic, weak) UIView *toastView;
+@property (nonatomic, weak, nullable) CRToast *notification;
+@property (nonatomic, weak, nullable) UIView *toastView;
 @property (nonatomic, assign) UIStatusBarStyle statusBarStyle;
 
 @end

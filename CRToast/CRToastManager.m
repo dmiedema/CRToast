@@ -11,8 +11,8 @@
 #import "CRToastLayoutHelpers.h"
 
 @interface CRToast (CRToastManager)
-+ (void)setDefaultOptions:(NSDictionary*)defaultOptions;
-+ (instancetype)notificationWithOptions:(NSDictionary*)options appearanceBlock:(void (^)(void))appearance completionBlock:(void (^)(void))completion;
++ (void)setDefaultOptions:(NSDictionary<NSString *, NSObject *> *)defaultOptions;
++ (instancetype)notificationWithOptions:(NSDictionary<NSString *, NSObject *> *)options appearanceBlock:(void (^_Nullable)(void))appearance completionBlock:(void (^_Nullable)(void))completion;
 @end
 
 @interface CRToastManager () <UICollisionBehaviorDelegate>
@@ -21,7 +21,7 @@
 @property (nonatomic, strong) UIView *statusBarView;
 @property (nonatomic, strong) UIView *notificationView;
 @property (nonatomic, readonly) CRToast *notification;
-@property (nonatomic, strong) NSMutableArray *notifications;
+@property (nonatomic, strong) NSMutableArray<CRToast *> *notifications;
 @property (nonatomic, copy) void (^gravityAnimationCompletionBlock)(BOOL finished);
 @end
 
@@ -41,7 +41,7 @@ typedef void (^CRToastAnimationStepBlock)(void);
                       completionBlock:completion];
 }
 
-+ (void)showNotificationWithOptions:(NSDictionary*)options completionBlock:(void (^)(void))completion {
++ (void)showNotificationWithOptions:(NSDictionary<NSString *, NSObject *> *)options completionBlock:(void (^_Nullable)(void))completion {
     [self showNotificationWithOptions:options
                        apperanceBlock:nil
                       completionBlock:completion];
